@@ -23,6 +23,6 @@ The code for this exercise is provided in a Python notebook. The notebook is des
 
     ![Screenshot of ScriptBook](./Media/script-book.png)
 
-1. Download the [numpy-pandas.pysb](https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/numpy-pandas.pysb){:target="_blank"} notebook from `https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/numpy-pandas.pysb` and save it on your local computer.
-1. In ScriptBook, use the **Load Notebook** button to open the numpy-pandas.pysb notebook file you downloaded.
+1. In a new browser tab, open the [numpy-pandas.pysb](https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/numpy-pandas.pysb){:target="_blank"} notebook at `https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/numpy-pandas.pysb` and save it on your local computer - be sure to save it as as **numpy-pandas.pysb**, <u>not</u> *numpy-pandas.pysb.**txt***.
+1. In ScriptBook, use the **Load Notebook** button to open the **numpy-pandas.pysb** notebook file you downloaded.
 1. Follow the instructions in the notebook to run the Python code cells and review the outputs.
