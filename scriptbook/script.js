@@ -282,12 +282,24 @@ async function runCell(cellId) {
             output.classList.add('markdown-output');
             // Collapse the code pane for markdown cells
             input.classList.add('collapsed');
+            
+            // Update toggle button to show pencil icon and correct tooltip
+            const toggleBtn = cell.querySelector('.btn-toggle');
+            toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1);">✏️</span>';
+            toggleBtn.setAttribute('aria-label', 'Show code editor');
+            toggleBtn.setAttribute('title', 'Show code editor');
         } else {
             // Run Python code
             output.innerHTML = '<div class="loading">Running...</div>';
             await runPythonCode(code, output, cellId);
             // Ensure Python cells stay expanded
             input.classList.remove('collapsed');
+            
+            // Update toggle button to show code brackets icon and correct tooltip
+            const toggleBtn = cell.querySelector('.btn-toggle');
+            toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span>';
+            toggleBtn.setAttribute('aria-label', 'Hide code editor');
+            toggleBtn.setAttribute('title', 'Hide code editor');
         }
     } catch (error) {
         output.innerHTML = `<div class="error">Error: ${error.message}</div>`;
