@@ -107,7 +107,7 @@
     },
     {
       "type": "python",
-      "content": "# Get the rows with index values from 0 to 5\ndf_students.loc[0:5]"
+      "content": "# Get the rows with index values from 0 to 5\nprint(df_students.loc[0:5])"
     },
     {
       "type": "markdown",
