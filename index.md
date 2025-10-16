@@ -1,5 +1,5 @@
 ---
-title: Exercise Instructions
+title: Create Machine Learning Models
 permalink: index.html
 layout: home
 ---
