@@ -13,6 +13,36 @@ window.addEventListener('py:ready', () => {
     console.log('PyScript is ready');
 });
 
+// Initialize cell state based on its type
+function initializeCellState(cellId) {
+    const cell = document.getElementById(cellId);
+    const cellType = cell.querySelector('.cell-type-selector').value;
+    const runBtn = cell.querySelector('.btn-run');
+    const stopBtn = cell.querySelector('.btn-stop');
+    
+    // Add toggle button event listener if not already added
+    const toggleButton = cell.querySelector('.btn-toggle');
+    if (toggleButton && !toggleButton.onclick) {
+        toggleButton.onclick = (e) => {
+            e.stopPropagation();
+            toggleEditMode(cellId);
+        };
+    }
+    
+    if (cellType === 'markdown') {
+        // Hide run/stop buttons for markdown cells
+        runBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+    } else {
+        // Show run button for code cells
+        runBtn.style.display = 'inline-block';
+        stopBtn.style.display = 'none';
+    }
+    
+    // Update tab order
+    updateTabOrder();
+}
+
 // Initialize the notebook with one cell
 document.addEventListener('DOMContentLoaded', () => {
     addCell();
@@ -47,19 +77,26 @@ function addCell() {
             </select>
             <button class="btn-run" onclick="runCell('${cellId}')" aria-label="Run this cell" title="Run this cell" tabindex="0">▶ Run</button>
             <button class="btn-stop" onclick="stopCell('${cellId}')" aria-label="Stop cell execution" title="Stop cell execution" style="display: none;" tabindex="0">⏹ Stop</button>
-            <button class="btn-toggle" onclick="toggleCodePane('${cellId}')" aria-label="Hide code editor" title="Hide code editor" tabindex="0"><span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span></button>
+            <button class="btn-toggle" aria-label="Switch to view mode" title="Switch to view mode" tabindex="0"><span style="filter: brightness(0) invert(1); font-weight: bold;">👁</span></button>
             <button class="btn-delete" onclick="deleteCell('${cellId}')" aria-label="Delete this cell" title="Delete this cell" tabindex="0">✖</button>
         </div>
-        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text" tabindex="0"># Write your code here</textarea>
+        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text" tabindex="0" data-edit-mode="true"># Write your code here</textarea>
         <div class="cell-output" role="region" aria-label="Cell output" aria-live="polite"></div>
     `;
     
-    // Add Tab key handler to insert 4 spaces
+    // Add Tab key handler and edit mode handlers
     const textarea = cellDiv.querySelector('.cell-input');
-    textarea.addEventListener('keydown', handleTabKey);
+    textarea.addEventListener('keydown', (e) => handleCellKeydown(e, cellId));
     
     // Add focus handler to select default text on first click
     textarea.addEventListener('focus', handleFirstFocus);
+    
+    // Add click handler to switch to edit mode
+    cellDiv.addEventListener('click', (e) => handleCellClick(e, cellId));
+    
+    // Add cell type change handler
+    const cellTypeSelector = cellDiv.querySelector('.cell-type-selector');
+    cellTypeSelector.addEventListener('change', (e) => handleCellTypeChange(e, cellId));
     
     // Add hover zone before the cell
     const hoverZoneBefore = document.createElement('div');
@@ -78,6 +115,18 @@ function addCell() {
     
     notebook.appendChild(hoverZoneBefore);
     notebook.appendChild(cellDiv);
+    
+    // Add toggle button event listener
+    const toggleButton = cellDiv.querySelector('.btn-toggle');
+    if (toggleButton) {
+        toggleButton.onclick = (e) => {
+            e.stopPropagation();
+            toggleEditMode(cellId);
+        };
+    }
+    
+    // Initialize cell state after adding to DOM
+    initializeCellState(cellId);
     
     // Update hover zones
     updateHoverZones();
@@ -106,19 +155,26 @@ function insertCellBefore(beforeCellId) {
             </select>
             <button class="btn-run" onclick="runCell('${newCellId}')" aria-label="Run this cell" title="Run this cell" tabindex="0">▶ Run</button>
             <button class="btn-stop" onclick="stopCell('${newCellId}')" aria-label="Stop cell execution" title="Stop cell execution" style="display: none;" tabindex="0">⏹ Stop</button>
-            <button class="btn-toggle" onclick="toggleCodePane('${newCellId}')" aria-label="Hide code editor" title="Hide code editor" tabindex="0"><span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span></button>
+            <button class="btn-toggle" aria-label="Switch to view mode" title="Switch to view mode" tabindex="0"><span style="filter: brightness(0) invert(1); font-weight: bold;">👁</span></button>
             <button class="btn-delete" onclick="deleteCell('${newCellId}')" aria-label="Delete this cell" title="Delete this cell" tabindex="0">✖</button>
         </div>
-        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text" tabindex="0"># Write your code here</textarea>
+        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text" tabindex="0" data-edit-mode="true"># Write your code here</textarea>
         <div class="cell-output" role="region" aria-label="Cell output" aria-live="polite"></div>
     `;
     
-    // Add Tab key handler to insert 4 spaces
+    // Add Tab key handler and edit mode handlers
     const textarea = cellDiv.querySelector('.cell-input');
-    textarea.addEventListener('keydown', handleTabKey);
+    textarea.addEventListener('keydown', (e) => handleCellKeydown(e, newCellId));
     
     // Add focus handler to select default text on first click
     textarea.addEventListener('focus', handleFirstFocus);
+    
+    // Add click handler to switch to edit mode
+    cellDiv.addEventListener('click', (e) => handleCellClick(e, newCellId));
+    
+    // Add cell type change handler
+    const cellTypeSelector = cellDiv.querySelector('.cell-type-selector');
+    cellTypeSelector.addEventListener('change', (e) => handleCellTypeChange(e, newCellId));
     
     // Find the hover zone before the target cell
     const hoverZone = beforeCell.previousElementSibling;
@@ -141,6 +197,18 @@ function insertCellBefore(beforeCellId) {
     // Insert before the hover zone
     notebook.insertBefore(newHoverZone, hoverZone);
     notebook.insertBefore(cellDiv, hoverZone);
+    
+    // Add toggle button event listener
+    const toggleButton = cellDiv.querySelector('.btn-toggle');
+    if (toggleButton) {
+        toggleButton.onclick = (e) => {
+            e.stopPropagation();
+            toggleEditMode(newCellId);
+        };
+    }
+    
+    // Initialize cell state after adding to DOM
+    initializeCellState(newCellId);
     
     updateHoverZones();
     updateTabOrder();
@@ -172,21 +240,44 @@ function updateHoverZones() {
     notebook.appendChild(hoverZoneEnd);
 }
 
-// Handle Tab key in textareas to insert 4 spaces
-function handleTabKey(e) {
+// Handle keyboard events in cell textareas
+function handleCellKeydown(e, cellId) {
+    const textarea = e.target;
+    const cell = document.getElementById(cellId);
+    const cellType = cell.querySelector('.cell-type-selector').value;
+    const isEditMode = textarea.getAttribute('data-edit-mode') === 'true';
+    
     if (e.key === 'Tab') {
-        e.preventDefault();
-        
-        const textarea = e.target;
-        const start = textarea.selectionStart;
-        const end = textarea.selectionEnd;
-        
-        // Insert 4 spaces at cursor position
-        const spaces = '    ';
-        textarea.value = textarea.value.substring(0, start) + spaces + textarea.value.substring(end);
-        
-        // Move cursor after the inserted spaces
-        textarea.selectionStart = textarea.selectionEnd = start + spaces.length;
+        if (isEditMode) {
+            // In edit mode, insert tab character
+            e.preventDefault();
+            
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            
+            // Insert 4 spaces at cursor position
+            const spaces = '    ';
+            textarea.value = textarea.value.substring(0, start) + spaces + textarea.value.substring(end);
+            
+            // Move cursor after the inserted spaces
+            textarea.selectionStart = textarea.selectionEnd = start + spaces.length;
+        }
+        // In view mode, let Tab work for navigation (don't preventDefault)
+    } else if (e.key === 'Enter' && !e.shiftKey) {
+        // ENTER key activates edit mode (when in view mode)
+        if (!isEditMode) {
+            e.preventDefault();
+            toggleEditMode(cellId);
+        }
+        // When in edit mode, let Enter work normally
+    } else if (e.key === 'Escape') {
+        // ESC key deactivates edit mode
+        if (isEditMode) {
+            e.preventDefault();
+            toggleEditMode(cellId);
+            textarea.blur(); // Remove focus from textarea
+        }
+        // For markdown cells, ESC doesn't do anything special
     }
 }
 
@@ -201,6 +292,76 @@ function handleFirstFocus(event) {
         // Remove this event listener after first use
         textarea.removeEventListener('focus', handleFirstFocus);
     }
+}
+
+// Handle cell click to switch to edit mode
+function handleCellClick(event, cellId) {
+    const cell = document.getElementById(cellId);
+    const textarea = cell.querySelector('.cell-input');
+    const cellType = cell.querySelector('.cell-type-selector').value;
+    const target = event.target;
+    
+    // Don't interfere if clicking on buttons or other controls
+    if (target.tagName === 'BUTTON' || target.tagName === 'SELECT' || 
+        target.classList.contains('cell-header') || 
+        target.closest('.cell-header')) {
+        return;
+    }
+    
+    // Switch to edit mode if not already in edit mode
+    const isEditMode = textarea.getAttribute('data-edit-mode') === 'true';
+    if (!isEditMode) {
+        toggleEditMode(cellId);
+    }
+    
+    // Focus the textarea if it's editable
+    if (!textarea.hasAttribute('readonly')) {
+        textarea.focus();
+    }
+}
+
+// Handle cell type change to update button state
+function handleCellTypeChange(event, cellId) {
+    const cell = document.getElementById(cellId);
+    const textarea = cell.querySelector('.cell-input');
+    const toggleBtn = cell.querySelector('.btn-toggle');
+    const runBtn = cell.querySelector('.btn-run');
+    const stopBtn = cell.querySelector('.btn-stop');
+    const newCellType = event.target.value;
+    
+    if (newCellType === 'markdown') {
+        // For markdown cells, start in edit mode like code cells
+        textarea.classList.remove('view-mode', 'collapsed');
+        textarea.removeAttribute('readonly');
+        textarea.setAttribute('data-edit-mode', 'true');
+        toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">👁</span>';
+        toggleBtn.setAttribute('aria-label', 'Switch to view mode');
+        toggleBtn.setAttribute('title', 'Switch to view mode');
+        
+        // Hide run/stop buttons for markdown cells
+        runBtn.style.display = 'none';
+        stopBtn.style.display = 'none';
+    } else {
+        // For code cells, start in edit mode
+        textarea.classList.remove('view-mode', 'collapsed');
+        textarea.removeAttribute('readonly');
+        textarea.setAttribute('data-edit-mode', 'true');
+        toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">👁</span>';
+        toggleBtn.setAttribute('aria-label', 'Switch to view mode');
+        toggleBtn.setAttribute('title', 'Switch to view mode');
+        
+        // Show run button for code cells
+        runBtn.style.display = 'inline-block';
+        // stopBtn stays hidden until needed
+    }
+    
+    // Clear any existing output
+    const output = cell.querySelector('.cell-output');
+    output.innerHTML = '';
+    output.classList.remove('markdown-output');
+    
+    // Update tab order
+    updateTabOrder();
 }
 
 // Stop a running cell
@@ -237,27 +398,77 @@ function stopCell(cellId) {
 }
 
 // Toggle code pane visibility
-function toggleCodePane(cellId) {
+// Toggle edit mode for cells
+function toggleEditMode(cellId) {
     const cell = document.getElementById(cellId);
     const input = cell.querySelector('.cell-input');
     const toggleBtn = cell.querySelector('.btn-toggle');
+    const output = cell.querySelector('.cell-output');
+    const cellType = cell.querySelector('.cell-type-selector').value;
     
-    input.classList.toggle('collapsed');
+    const isEditMode = input.getAttribute('data-edit-mode') === 'true';
+    const hadFocus = document.activeElement === input;
     
-    // Update button icon based on visibility state
-    if (input.classList.contains('collapsed')) {
-        // Code is hidden, show white pencil icon
+    if (isEditMode) {
+        // Switch to view mode
+        input.setAttribute('data-edit-mode', 'false');
         toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1);">✏️</span>';
-        toggleBtn.setAttribute('aria-label', 'Show code editor');
-        toggleBtn.setAttribute('title', 'Show code editor');
+        toggleBtn.setAttribute('aria-label', 'Switch to edit mode');
+        toggleBtn.setAttribute('title', 'Switch to edit mode');
+        
+        if (cellType === 'markdown') {
+            // For markdown cells in view mode: hide source, show rendered output
+            input.style.display = 'none';
+            const code = input.value;
+            if (code.trim()) {
+                output.innerHTML = renderMarkdown(code);
+                output.classList.add('markdown-output');
+                output.style.display = 'block';
+            } else {
+                output.innerHTML = '';
+                output.classList.remove('markdown-output');
+                output.style.display = 'none';
+            }
+        } else {
+            // For code cells in view mode: show source as read-only, keep output visible
+            input.setAttribute('readonly', 'readonly');
+            input.classList.add('view-mode');
+            input.style.display = 'block';
+            // Don't hide output for code cells - it should always be visible if present
+            
+            // Retain focus if cell had focus before
+            if (hadFocus) {
+                input.focus();
+            }
+        }
     } else {
-        // Code is visible, show bold white code brackets to indicate "hide"
-        toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span>';
-        toggleBtn.setAttribute('aria-label', 'Hide code editor');
-        toggleBtn.setAttribute('title', 'Hide code editor');
+        // Switch to edit mode
+        input.setAttribute('data-edit-mode', 'true');
+        toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">👁</span>';
+        toggleBtn.setAttribute('aria-label', 'Switch to view mode');
+        toggleBtn.setAttribute('title', 'Switch to view mode');
+        
+        if (cellType === 'markdown') {
+            // For markdown cells in edit mode: show source, hide rendered output
+            input.removeAttribute('readonly');
+            input.classList.remove('view-mode');
+            input.style.display = 'block';
+            output.innerHTML = '';
+            output.classList.remove('markdown-output');
+            output.style.display = 'none';
+        } else {
+            // For code cells in edit mode: show source as editable, keep output visible
+            input.removeAttribute('readonly');
+            input.classList.remove('view-mode');
+            input.style.display = 'block';
+            // Don't hide output for code cells - it should always be visible if present
+        }
+        
+        // Always focus when entering edit mode
+        input.focus();
     }
     
-    // Update tab order since textarea visibility changed
+    // Update tab order since textarea properties changed
     updateTabOrder();
 }
 
@@ -286,6 +497,11 @@ async function runCell(cellId) {
     const cellType = cell.querySelector('.cell-type-selector').value;
     const code = input.value;
     
+    // Skip markdown cells entirely - they don't get executed
+    if (cellType === 'markdown') {
+        return;
+    }
+    
     // Show stop button, hide run button IMMEDIATELY (before any async operations)
     runBtn.style.display = 'none';
     stopBtn.style.display = 'inline-block';
@@ -311,41 +527,27 @@ async function runCell(cellId) {
     await new Promise(resolve => setTimeout(resolve, 0));
     
     try {
-        if (cellType === 'markdown') {
-            // Render markdown (simple implementation)
-            output.innerHTML = renderMarkdown(code);
-            output.classList.add('markdown-output');
-            // Collapse the code pane for markdown cells
-            input.classList.add('collapsed');
-            
-            // Update toggle button to show pencil icon and correct tooltip
-            const toggleBtn = cell.querySelector('.btn-toggle');
-            toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1);">✏️</span>';
-            toggleBtn.setAttribute('aria-label', 'Show code editor');
-            toggleBtn.setAttribute('title', 'Show code editor');
-            
-            // Update tab order since textarea visibility changed
-            updateTabOrder();
-        } else {
-            // Run Python code
-            output.innerHTML = '<div class="loading">Running...</div>';
-            await runPythonCode(code, output, cellId);
-            // Ensure Python cells stay expanded
-            input.classList.remove('collapsed');
-            
-            // Update toggle button to show code brackets icon and correct tooltip
-            const toggleBtn = cell.querySelector('.btn-toggle');
-            toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span>';
-            toggleBtn.setAttribute('aria-label', 'Hide code editor');
-            toggleBtn.setAttribute('title', 'Hide code editor');
-            
-            // Update tab order since textarea visibility changed
-            updateTabOrder();
-        }
+        // Run Python code (we've already filtered out markdown cells above)
+        output.innerHTML = '<div class="loading">Running...</div>';
+        await runPythonCode(code, output, cellId);
+        // Ensure Python cells stay expanded but switch to view mode after execution
+        input.classList.remove('collapsed');
+        input.setAttribute('data-edit-mode', 'false');
+        input.setAttribute('readonly', 'readonly');
+        input.classList.add('view-mode');
+        
+        // Update toggle button to show pencil icon for edit mode activation
+        const toggleBtn = cell.querySelector('.btn-toggle');
+        toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1);">✏️</span>';
+        toggleBtn.setAttribute('aria-label', 'Switch to edit mode');
+        toggleBtn.setAttribute('title', 'Switch to edit mode');
+        
+        // Update tab order since textarea properties changed
+        updateTabOrder();
     } catch (error) {
         output.innerHTML = `<div class="error">Error: ${error.message}</div>`;
     } finally {
-        // Restore buttons
+        // Restore buttons for code cells only
         runBtn.style.display = 'inline-block';
         stopBtn.style.display = 'none';
         // Update tab order since button visibility changed
@@ -735,35 +937,37 @@ function loadNotebook(event) {
             
             // Load cells from file
             if (notebookData.cells && notebookData.cells.length > 0) {
-                notebookData.cells.forEach(cellData => {
+                const markdownCellsToToggle = [];
+                
+                notebookData.cells.forEach((cellData, index) => {
                     addCell();
                     
                     // Get the newly added cell
                     const cells = document.querySelectorAll('.cell');
                     const cell = cells[cells.length - 1];
+                    const cellId = cell.id;
                     
-                    // Set cell type
+                    // Set cell type and trigger change event to update button visibility
                     const typeSelector = cell.querySelector('.cell-type-selector');
                     typeSelector.value = cellData.type || 'python';
+                    typeSelector.dispatchEvent(new Event('change'));
                     
                     // Set cell content
                     const input = cell.querySelector('.cell-input');
                     input.value = cellData.content || '';
                     
-                    // Auto-render markdown cells and hide their source
+                    // Track markdown cells with content for later view mode switch
                     if (cellData.type === 'markdown' && cellData.content) {
-                        const output = cell.querySelector('.cell-output');
-                        output.innerHTML = renderMarkdown(cellData.content);
-                        output.classList.add('markdown-output');
-                        // Collapse the code pane for markdown cells
-                        input.classList.add('collapsed');
-                        // Update toggle button to show pencil icon
-                        const toggleBtn = cell.querySelector('.btn-toggle');
-                        toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1);">✏️</span>';
-                        toggleBtn.setAttribute('aria-label', 'Show code editor');
-                        toggleBtn.setAttribute('title', 'Show code editor');
+                        markdownCellsToToggle.push(cellId);
                     }
                 });
+                
+                // Switch markdown cells to view mode after all cells are loaded
+                setTimeout(() => {
+                    markdownCellsToToggle.forEach(cellId => {
+                        toggleEditMode(cellId);
+                    });
+                }, 50);
             } else {
                 // If no cells in file, add one empty cell
                 addCell();
