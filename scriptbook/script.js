@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('fileUpload').addEventListener('change', handleFileUpload);
     document.getElementById('saveBtn').addEventListener('click', saveNotebook);
     document.getElementById('loadFile').addEventListener('change', loadNotebook);
+    
+    // Set initial tab order
+    updateTabOrder();
 });
 
 // Add a new cell to the notebook
@@ -38,16 +41,16 @@ function addCell() {
     
     cellDiv.innerHTML = `
         <div class="cell-header" role="toolbar" aria-label="Cell controls">
-            <select class="cell-type-selector" aria-label="Select cell type">
+            <select class="cell-type-selector" aria-label="Select cell type" tabindex="0">
                 <option value="python">Python</option>
                 <option value="markdown">Markdown</option>
             </select>
-            <button class="btn-run" onclick="runCell('${cellId}')" aria-label="Run this cell" title="Run this cell">▶ Run</button>
-            <button class="btn-stop" onclick="stopCell('${cellId}')" aria-label="Stop cell execution" title="Stop cell execution" style="display: none;">⏹ Stop</button>
-            <button class="btn-toggle" onclick="toggleCodePane('${cellId}')" aria-label="Hide code editor" title="Hide code editor"><span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span></button>
-            <button class="btn-delete" onclick="deleteCell('${cellId}')" aria-label="Delete this cell" title="Delete this cell">✖</button>
+            <button class="btn-run" onclick="runCell('${cellId}')" aria-label="Run this cell" title="Run this cell" tabindex="0">▶ Run</button>
+            <button class="btn-stop" onclick="stopCell('${cellId}')" aria-label="Stop cell execution" title="Stop cell execution" style="display: none;" tabindex="0">⏹ Stop</button>
+            <button class="btn-toggle" onclick="toggleCodePane('${cellId}')" aria-label="Hide code editor" title="Hide code editor" tabindex="0"><span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span></button>
+            <button class="btn-delete" onclick="deleteCell('${cellId}')" aria-label="Delete this cell" title="Delete this cell" tabindex="0">✖</button>
         </div>
-        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text"># Write your code here</textarea>
+        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text" tabindex="0"># Write your code here</textarea>
         <div class="cell-output" role="region" aria-label="Cell output" aria-live="polite"></div>
     `;
     
@@ -61,9 +64,16 @@ function addCell() {
     // Add hover zone before the cell
     const hoverZoneBefore = document.createElement('div');
     hoverZoneBefore.className = 'cell-hover-zone';
-    hoverZoneBefore.innerHTML = '<div class="add-cell-button">+ Add Cell</div>';
-    hoverZoneBefore.querySelector('.add-cell-button').onclick = () => {
+    hoverZoneBefore.innerHTML = '<button class="add-cell-button" tabindex="0" aria-label="Add cell before this cell">+ Add Cell</button>';
+    const addButton = hoverZoneBefore.querySelector('.add-cell-button');
+    addButton.onclick = () => {
         insertCellBefore(cellId);
+    };
+    addButton.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            insertCellBefore(cellId);
+        }
     };
     
     notebook.appendChild(hoverZoneBefore);
@@ -71,6 +81,9 @@ function addCell() {
     
     // Update hover zones
     updateHoverZones();
+    
+    // Update tab order for all elements
+    updateTabOrder();
 }
 
 // Insert a cell before a specific cell
@@ -87,16 +100,16 @@ function insertCellBefore(beforeCellId) {
     
     cellDiv.innerHTML = `
         <div class="cell-header" role="toolbar" aria-label="Cell controls">
-            <select class="cell-type-selector" aria-label="Select cell type">
+            <select class="cell-type-selector" aria-label="Select cell type" tabindex="0">
                 <option value="python">Python</option>
                 <option value="markdown">Markdown</option>
             </select>
-            <button class="btn-run" onclick="runCell('${newCellId}')" aria-label="Run this cell" title="Run this cell">▶ Run</button>
-            <button class="btn-stop" onclick="stopCell('${newCellId}')" aria-label="Stop cell execution" title="Stop cell execution" style="display: none;">⏹ Stop</button>
-            <button class="btn-toggle" onclick="toggleCodePane('${newCellId}')" aria-label="Hide code editor" title="Hide code editor"><span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span></button>
-            <button class="btn-delete" onclick="deleteCell('${newCellId}')" aria-label="Delete this cell" title="Delete this cell">✖</button>
+            <button class="btn-run" onclick="runCell('${newCellId}')" aria-label="Run this cell" title="Run this cell" tabindex="0">▶ Run</button>
+            <button class="btn-stop" onclick="stopCell('${newCellId}')" aria-label="Stop cell execution" title="Stop cell execution" style="display: none;" tabindex="0">⏹ Stop</button>
+            <button class="btn-toggle" onclick="toggleCodePane('${newCellId}')" aria-label="Hide code editor" title="Hide code editor" tabindex="0"><span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span></button>
+            <button class="btn-delete" onclick="deleteCell('${newCellId}')" aria-label="Delete this cell" title="Delete this cell" tabindex="0">✖</button>
         </div>
-        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text"># Write your code here</textarea>
+        <textarea class="cell-input" placeholder="Enter Python code or Markdown..." aria-label="Cell input code or text" tabindex="0"># Write your code here</textarea>
         <div class="cell-output" role="region" aria-label="Cell output" aria-live="polite"></div>
     `;
     
@@ -110,12 +123,19 @@ function insertCellBefore(beforeCellId) {
     // Find the hover zone before the target cell
     const hoverZone = beforeCell.previousElementSibling;
     
-    // Create hover zone for new cell
+    // Create new hover zone for the inserted cell
     const newHoverZone = document.createElement('div');
     newHoverZone.className = 'cell-hover-zone';
-    newHoverZone.innerHTML = '<div class="add-cell-button">+ Add Cell</div>';
-    newHoverZone.querySelector('.add-cell-button').onclick = () => {
+    newHoverZone.innerHTML = '<button class="add-cell-button" tabindex="0" aria-label="Add cell before this cell">+ Add Cell</button>';
+    const addButton = newHoverZone.querySelector('.add-cell-button');
+    addButton.onclick = () => {
         insertCellBefore(newCellId);
+    };
+    addButton.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            insertCellBefore(newCellId);
+        }
     };
     
     // Insert before the hover zone
@@ -123,6 +143,7 @@ function insertCellBefore(beforeCellId) {
     notebook.insertBefore(cellDiv, hoverZone);
     
     updateHoverZones();
+    updateTabOrder();
 }
 
 // Update hover zones (add one at the end)
@@ -138,8 +159,15 @@ function updateHoverZones() {
     // Add hover zone at the end
     const hoverZoneEnd = document.createElement('div');
     hoverZoneEnd.className = 'cell-hover-zone cell-hover-zone-end';
-    hoverZoneEnd.innerHTML = '<div class="add-cell-button">+ Add Cell</div>';
-    hoverZoneEnd.querySelector('.add-cell-button').onclick = addCell;
+    hoverZoneEnd.innerHTML = '<button class="add-cell-button" tabindex="0" aria-label="Add cell at end">+ Add Cell</button>';
+    const addButton = hoverZoneEnd.querySelector('.add-cell-button');
+    addButton.onclick = addCell;
+    addButton.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            addCell();
+        }
+    };
     
     notebook.appendChild(hoverZoneEnd);
 }
@@ -228,6 +256,9 @@ function toggleCodePane(cellId) {
         toggleBtn.setAttribute('aria-label', 'Hide code editor');
         toggleBtn.setAttribute('title', 'Hide code editor');
     }
+    
+    // Update tab order since textarea visibility changed
+    updateTabOrder();
 }
 
 // Delete a cell
@@ -241,6 +272,7 @@ function deleteCell(cellId) {
         }
         cell.remove();
         updateHoverZones();
+        updateTabOrder();
     }
 }
 
@@ -257,6 +289,9 @@ async function runCell(cellId) {
     // Show stop button, hide run button IMMEDIATELY (before any async operations)
     runBtn.style.display = 'none';
     stopBtn.style.display = 'inline-block';
+    
+    // Update tab order since button visibility changed
+    updateTabOrder();
     
     // Force a reflow to ensure UI updates
     stopBtn.offsetHeight;
@@ -288,6 +323,9 @@ async function runCell(cellId) {
             toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1);">✏️</span>';
             toggleBtn.setAttribute('aria-label', 'Show code editor');
             toggleBtn.setAttribute('title', 'Show code editor');
+            
+            // Update tab order since textarea visibility changed
+            updateTabOrder();
         } else {
             // Run Python code
             output.innerHTML = '<div class="loading">Running...</div>';
@@ -300,6 +338,9 @@ async function runCell(cellId) {
             toggleBtn.innerHTML = '<span style="filter: brightness(0) invert(1); font-weight: bold;">&lt;/&gt;</span>';
             toggleBtn.setAttribute('aria-label', 'Hide code editor');
             toggleBtn.setAttribute('title', 'Hide code editor');
+            
+            // Update tab order since textarea visibility changed
+            updateTabOrder();
         }
     } catch (error) {
         output.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -307,6 +348,8 @@ async function runCell(cellId) {
         // Restore buttons
         runBtn.style.display = 'inline-block';
         stopBtn.style.display = 'none';
+        // Update tab order since button visibility changed
+        updateTabOrder();
     }
 }
 
@@ -737,4 +780,71 @@ function loadNotebook(event) {
     
     // Reset file input
     event.target.value = '';
+}
+
+// Update tab order for proper keyboard navigation
+function updateTabOrder() {
+    let tabIndex = 1;
+    
+    // Start with toolbar buttons
+    const toolbarButtons = document.querySelectorAll('.toolbar button, .toolbar label');
+    toolbarButtons.forEach(button => {
+        button.setAttribute('tabindex', tabIndex++);
+    });
+    
+    // Then process each cell in document order
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        // Add cell button before each cell
+        const hoverZone = cell.previousElementSibling;
+        if (hoverZone && hoverZone.classList.contains('cell-hover-zone')) {
+            const addButton = hoverZone.querySelector('.add-cell-button');
+            if (addButton) {
+                addButton.setAttribute('tabindex', tabIndex++);
+            }
+        }
+        
+        // Cell controls in left-to-right order
+        const selector = cell.querySelector('.cell-type-selector');
+        if (selector) selector.setAttribute('tabindex', tabIndex++);
+        
+        const runBtn = cell.querySelector('.btn-run');
+        if (runBtn) runBtn.setAttribute('tabindex', tabIndex++);
+        
+        const stopBtn = cell.querySelector('.btn-stop');
+        if (stopBtn) {
+            // Only set tabindex if visible, otherwise remove from tab order
+            if (stopBtn.style.display !== 'none') {
+                stopBtn.setAttribute('tabindex', tabIndex++);
+            } else {
+                stopBtn.setAttribute('tabindex', '-1');
+            }
+        }
+        
+        const toggleBtn = cell.querySelector('.btn-toggle');
+        if (toggleBtn) toggleBtn.setAttribute('tabindex', tabIndex++);
+        
+        const deleteBtn = cell.querySelector('.btn-delete');
+        if (deleteBtn) deleteBtn.setAttribute('tabindex', tabIndex++);
+        
+        // Cell textarea
+        const textarea = cell.querySelector('.cell-input');
+        if (textarea) {
+            // Only include in tab order if not collapsed
+            if (!textarea.classList.contains('collapsed')) {
+                textarea.setAttribute('tabindex', tabIndex++);
+            } else {
+                textarea.setAttribute('tabindex', '-1');
+            }
+        }
+    });
+    
+    // Finally, the end add cell button
+    const endHoverZone = document.querySelector('.cell-hover-zone-end');
+    if (endHoverZone) {
+        const addButton = endHoverZone.querySelector('.add-cell-button');
+        if (addButton) {
+            addButton.setAttribute('tabindex', tabIndex++);
+        }
+    }
 }

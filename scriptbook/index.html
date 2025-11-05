@@ -15,17 +15,17 @@
     <div class="container">
         <header>
             <h1>ScriptBook</h1>
-            <p class="subtitle">Python Notebook Environment</p>
+            <p class="subtitle">A basic Python notebook environment for educational use</p>
         </header>
 
         <div class="toolbar" role="toolbar" aria-label="Notebook controls">
-            <button id="runAllBtn" class="btn btn-primary" aria-label="Run all cells in the notebook" title="Run all cells in the notebook">▶ Run All</button>
-            <button id="clearAllBtn" class="btn btn-secondary" aria-label="Clear all cells and outputs" title="Clear all cells and outputs">🗑 Clear All</button>
-            <button id="saveBtn" class="btn btn-save" aria-label="Save notebook to file" title="Save notebook to file">💾 Save Notebook</button>
-            <label for="loadFile" class="btn btn-load" aria-label="Load notebook from file" title="Load notebook from file">📂 Load Notebook</label>
-            <input type="file" id="loadFile" accept=".pysb" style="display: none;" aria-label="Select notebook file to load">
-            <label for="fileUpload" class="btn btn-upload" aria-label="Upload data file (CSV or text)" title="Upload data file (CSV or text)">&#128196; Upload Data</label>
-            <input type="file" id="fileUpload" accept=".txt,.csv" style="display: none;" aria-label="Select data file to upload">
+            <button id="runAllBtn" class="btn btn-primary" aria-label="Run all cells in the notebook" title="Run all cells in the notebook" tabindex="0">▶ Run All</button>
+            <button id="clearAllBtn" class="btn btn-secondary" aria-label="Clear all cells and outputs" title="Clear all cells and outputs" tabindex="0">🗑 Clear All</button>
+            <button id="saveBtn" class="btn btn-save" aria-label="Save notebook to file" title="Save notebook to file" tabindex="0">💾 Save Notebook</button>
+            <label for="loadFile" class="btn btn-load" aria-label="Load notebook from file" title="Load notebook from file" tabindex="0">📂 Load Notebook</label>
+            <input type="file" id="loadFile" accept=".pysb" style="display: none;" aria-label="Select notebook file to load" tabindex="-1">
+            <label for="fileUpload" class="btn btn-upload" aria-label="Upload data file (CSV or text)" title="Upload data file (CSV or text)" tabindex="0">&#128196; Upload Data</label>
+            <input type="file" id="fileUpload" accept=".txt,.csv" style="display: none;" aria-label="Select data file to upload" tabindex="-1">
             <span id="uploadedFileName" class="file-name" role="status" aria-live="polite"></span>
         </div>
 
