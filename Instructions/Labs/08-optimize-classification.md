@@ -22,6 +22,6 @@ The code for this exercise is provided in a Python notebook. The notebook is des
 
     ![Screenshot of ScriptBook](./Media/script-book.png)
 
-1. In a new browser tab, open the [optimize-classification.pysb](https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/optimize-classification.pysb){:target="_blank"} notebook at `https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/optimize-classification.pysb` and save it on your local computer - be sure to save it as as **optimize-classification.pysb**, <u>not</u> *optimize-classification.pysb.**txt***.
+1. In a new browser tab, open the [optimize-classification.pysb]https://microsoftlearning.github.io/mslearn-ml-basics/Labfiles/optimize-classification.pysb){:target="_blank"} notebook at `https://microsoftlearning.github.io/mslearn-ml-basics/Labfiles/optimize-classification.pysb` and save it on your local computer - be sure to save it as as **optimize-classification.pysb**, <u>not</u> *optimize-classification.pysb.**txt***.
 1. In ScriptBook, use the **Load Notebook** button to open the **optimize-classification.pysb** notebook file you downloaded.
 1. Follow the instructions in the notebook to run the Python code cells and review the outputs. Note that in some steps, you may need to upload data files to the notebook before running the Python code that processes them!

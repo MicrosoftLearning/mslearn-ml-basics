@@ -23,6 +23,6 @@ The code for this exercise is provided in a Python notebook. The notebook is des
 
     ![Screenshot of ScriptBook](./Media/script-book.png)
 
-1. In a new browser tab, open the [kmeans-clustering.pysb](https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/kmeans-clustering.pysb){:target="_blank"} notebook at `https://raw.githubusercontent.com/MicrosoftLearning/mslearn-ml-basics/refs/heads/main/Labfiles/kmeans-clustering.pysb` and save it on your local computer - be sure to save it as as **kmeans-clustering.pysb**, <u>not</u> *kmeans-clustering.pysb.**txt***.
+1. In a new browser tab, open the [kmeans-clustering.pysb](https://microsoftlearning.github.io/mslearn-ml-basics/Labfiles/kmeans-clustering.pysb){:target="_blank"} notebook at `https://microsoftlearning.github.io/mslearn-ml-basics/Labfiles/kmeans-clustering.pysb` and save it on your local computer - be sure to save it as as **kmeans-clustering.pysb**, <u>not</u> *kmeans-clustering.pysb.**txt***.
 1. In ScriptBook, use the **Load Notebook** button to open the **kmeans-clustering.pysb** notebook file you downloaded.
 1. Follow the instructions in the notebook to run the Python code cells and review the outputs. Note that in some steps, you may need to upload data files to the notebook before running the Python code that processes them!
