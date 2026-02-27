@@ -2,6 +2,8 @@
 lab:
     title: 'Explore data distributions and comparisons'
     description: 'Explore data distributions and comparisons with Python'
+    duration: 15
+    level: 200
 ---
 
 

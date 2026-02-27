@@ -2,6 +2,8 @@
 lab:
     title: 'Optimize regression models'
     description: 'Optimize regression model algorithms'
+    duration: 15
+    level: 200
 ---
 
 

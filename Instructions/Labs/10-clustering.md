@@ -2,6 +2,8 @@
 lab:
     title: 'Get started with clustering'
     description: 'Explore clustering'
+    duration: 15
+    level: 200
 ---
 
 

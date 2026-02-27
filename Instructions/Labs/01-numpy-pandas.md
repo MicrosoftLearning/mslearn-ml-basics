@@ -2,6 +2,8 @@
 lab:
     title: 'Explore data with NumPy and Pandas'
     description: 'Explore basic data manipulation with Python'
+    duration: 15
+    level: 200
 ---
 
 

@@ -2,6 +2,8 @@
 lab:
     title: 'Experiment with regression models'
     description: 'Experiment with regression model algorithms'
+    duration: 15
+    level: 200
 ---
 
 

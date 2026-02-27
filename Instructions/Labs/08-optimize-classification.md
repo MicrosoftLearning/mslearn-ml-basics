@@ -2,6 +2,8 @@
 lab:
     title: 'Optimize classification models'
     description: 'Optimize a binary classification model'
+    duration: 15
+    level: 200
 ---
 
 # Optimize classification models

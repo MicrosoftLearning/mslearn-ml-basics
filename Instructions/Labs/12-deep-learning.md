@@ -2,6 +2,8 @@
 lab:
     title: 'Create a neural network'
     description: 'Explore deep learning by creating a neural network'
+    duration: 15
+    level: 200
 ---
 
 
