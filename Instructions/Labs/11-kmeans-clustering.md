@@ -1,11 +1,11 @@
 ---
 lab:
-    title: 'Create clustering models'
-    description: 'Use K-Means and Agglomerative clustering'
-    duration: 15
-    level: 200
+  title: Create clustering models
+  description: Use K-Means and Agglomerative clustering
+  duration: 15
+  level: 200
+  islab: true
 ---
-
 
 # Create clustering models
 
