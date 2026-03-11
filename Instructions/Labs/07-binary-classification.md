@@ -1,11 +1,11 @@
 ---
 lab:
-    title: 'Get started with classification'
-    description: 'Train a binary classification model'
-    duration: 15
-    level: 200
+  title: Get started with classification
+  description: Train a binary classification model
+  duration: 15
+  level: 200
+  islab: true
 ---
-
 
 # Get started with classification
 
