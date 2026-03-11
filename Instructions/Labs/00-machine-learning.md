@@ -1,9 +1,10 @@
 ---
 lab:
-    title: 'Explore Machine Learning'
-    description: 'Train and evaluate machine learning models'
-    duration: 15
-    level: 100
+  title: Explore Machine Learning
+  description: Train and evaluate machine learning models
+  duration: 15
+  level: 100
+  islab: true
 ---
 
 # Explore Machine Learning
