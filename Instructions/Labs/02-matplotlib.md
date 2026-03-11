@@ -1,11 +1,11 @@
 ---
 lab:
-    title: 'Visualize data with Matplotlib'
-    description: 'Explore data visualizations with Python'
-    duration: 15
-    level: 200
+  title: Visualize data with Matplotlib
+  description: Explore data visualizations with Python
+  duration: 15
+  level: 200
+  islab: true
 ---
-
 
 # Visualize data with Matplotlib
 
