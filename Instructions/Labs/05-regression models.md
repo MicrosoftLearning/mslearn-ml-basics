@@ -1,11 +1,11 @@
 ---
 lab:
-    title: 'Experiment with regression models'
-    description: 'Experiment with regression model algorithms'
-    duration: 15
-    level: 200
+  title: Experiment with regression models
+  description: Experiment with regression model algorithms
+  duration: 15
+  level: 200
+  islab: true
 ---
-
 
 # Experiment with regression models
 
