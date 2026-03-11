@@ -1,9 +1,10 @@
 ---
 lab:
-    title: 'Train a multiclass classification model'
-    description: 'Train a multiclass classification model'
-    duration: 15
-    level: 200
+  title: Train a multiclass classification model
+  description: Train a multiclass classification model
+  duration: 15
+  level: 200
+  islab: true
 ---
 
 # Train a multiclass classification model
