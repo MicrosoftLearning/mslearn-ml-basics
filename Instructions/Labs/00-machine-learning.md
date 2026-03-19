@@ -4,11 +4,12 @@ lab:
     description: 'Train and evaluate machine learning models'
     duration: 15
     level: 100
+    islab: true
 ---
 
 # Explore Machine Learning
 
-In this exercise, you'll use a lightweight application to train and evaluate machine learning models. The goal of this exercise is to experience the steps involved in training different kinds of machine learning model and reviewing model-specific metrics. 
+In this exercise, you'll use a lightweight application to train and evaluate machine learning models. The goal of this exercise is to experience the steps involved in training different kinds of machine learning model and reviewing model-specific metrics.
 
 This exercise should take approximately **15** minutes to complete.
 
@@ -28,7 +29,7 @@ Let's start by training  regression model, which predicts a numeric value. In th
 1. On the **Model Type & Data** page, select **Regression** and upload the **ice-cream.csv** text file to see a preview of the data it contains.
 
     ![Screenshot of the Model Type and Data page.](./Media/ml-lite-01.png)
-    
+
 1. On the **Training Settings** page:
     - Set the **Target column** to *IceCreamsSold*.
     - <u>De</u>select **Date** as a feature (it's unique each day, so unlikely to be predictive on its own) and use the other remaining columns as features with which to train the model.

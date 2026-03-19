@@ -4,6 +4,7 @@ lab:
     description: 'Experiment with regression model algorithms'
     duration: 15
     level: 200
+    islab: true
 ---
 
 
@@ -15,7 +16,7 @@ This exercise should take approximately **15** minutes to complete.
 
 ## Open and run the notebook for this exercise
 
-The code for this exercise is provided in a Python notebook. The notebook is designed to be run in a lightweight notebook environment called *ScriptBook* that was built specifically for this training. 
+The code for this exercise is provided in a Python notebook. The notebook is designed to be run in a lightweight notebook environment called *ScriptBook* that was built specifically for this training.
 
 > **Note**: The notebook editor runs locally in your browser, so there's no need to sign into any cloud services or install software on your computer. You just need a modern web browser, such as Microsoft Edge, with JavaScript enabled.
 
